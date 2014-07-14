@@ -12,23 +12,23 @@
 
 Good morning everyone.
 I'll present you a new fast sampling method that can generate distribution with arbitrary user specified spectra.
-This work was made in colaboration with peoples from LIRIS, Stanford and Caltech.
+This work was made in colaboration with people from LIRIS, Stanford and Caltech.
 
 
 
 == Problem Statement
 
 Basically, sampling is taking discrete values of a continuous function.
-To best evaluate this function, we want the samples equally distributed
+To better evaluate this function, we want the samples to be equally distributed
 and to have a greater density of sample in the major parts of the function.
 Also, the characteristics of the sample distribution have a big impact on the evaluation quality of the function.
 
 
 
-== Why it is essential?
+== Why is it essential?
 
-For example, local lack of samples generate a noisy evaluation.
-Another issue is the aliasing, resulting from interference between regularities in sampling and the function to evaluate.
+For example, local lack of samples generates a noisy evaluation.
+Another issue is the aliasing, resulting from interference between regularities in sampling and regularities in the function to evaluate.
 
 
 
@@ -37,8 +37,8 @@ Another issue is the aliasing, resulting from interference between regularities 
 
 To choose sample position, a straitforward approach is to take samples on a rectangular grid.
 This has the advantage of uniformly sample the whole space.
-But it produce strong aliasing artefact when the sampling frequency is under the Nyquist frequency.
-The regularities of this distribution is visible in spectral domain as a grid of peaks.
+But it produces strong aliasing artefacts when the sampling frequency is under the Nyquist frequency.
+The regularities of this distribution are visible in spectral domain as a grid of peaks.
 
 
 -- Monte Carlo
