@@ -1,4 +1,4 @@
-﻿SIGGRAPH14 talk text
+SIGGRAPH14 talk text
 ===========================
 
 == new slide
@@ -20,14 +20,14 @@ This work is the result of collaboration of people from French lab CNRS-LIRIS, S
 
 Basically, sampling is a process of discretization of a continuous function.
 Intuitively, we want the samples to be evenly distributed and to have a local density of samples proportional to the local value of the function.
-Also, The characteristics of the distribution of samples have a big impact on the quality of further treatement applyed on the samples, such as reconstruction, integral evaluation, etc.
+Also, The characteristics of the distribution of samples have a big impact on the quality of further treatment applied on the samples, such as reconstruction, integral evaluation, etc.
 
 
 
 == Why is it essential?
 
-For example, local lack of samples generates a noisy reconstruction.
-Another issue is the aliasing, resulting from interference between regularities in sampling and regularities in the function.
+For example, local lack of samples generates a noisy reconstruction as shown left image.
+Another issue is the aliasing, resulting from interference between regularities in sampling and regularities in the function, as shown on the right.
 
 
 
@@ -36,23 +36,23 @@ Another issue is the aliasing, resulting from interference between regularities 
 
 The simplest way to generate sample positions is to calculate a rectangular grid.
 This method has the advantage of sampling the whole space uniformly.
-But it produces strong aliasing artefacts when the sampling frequency is smaller than twice the characteristic frequency present in the function.
-It is well-known that the Fourier transform of a rectangular grid is also a rectangular grid of peaks.
+But it produces strong aliasing artifacts when the sampling frequency is smaller than twice the characteristic frequency present in the function.
+It is well known that the Fourier transform of a rectangular grid is also a rectangular grid of peaks.
 
 -- Random sampling
 
-Another simple solution would be to choose random position for sample.
+Another simple solution would be to choose random position for each sample.
 This way all frequencies are equally sampled, as can be seen by the constant Fourier spectrum.
-But this distribution doesn't garanty a good uniformity and creates local holes and heaps of samples.
-This lead to noisy images after reconstruction and/or integration.
+But this distribution doesn't guarantee a good uniformity and creates local holes and heaps of samples.
+This leads to noisy images after reconstruction and/or integration.
 
 
 
 == Previous works: Advanced Methods
 -- Poisson Disk
 
-Since niniteen-eighties, a lot of algorithms have been proposed to enhance the sampling quality for a constant number of samples.
-In Poisson Disk methods, a ramdom sample position is chosen, while respecting minimum point-to-point distance constrain.
+Since nineteen-eighties, a lot of algorithms have been proposed to enhance the sampling quality for a constant number of samples.
+In Poisson Disk methods, a random sample position is chosen, while respecting minimum point-to-point distance constraint.
 This method guarantees much better uniformity, compared to random sampling.
 
 -- Optimization based
@@ -60,43 +60,41 @@ This method guarantees much better uniformity, compared to random sampling.
 Another class of methods is based on optimization.
 The core of these methods is the minimization of an energy function associated to the samples.
 Currently, the best-quality sampling distribution are obtained with this class of methods.
-Notice that, in spectral domain, there is no frequency peaks, thus limiting aliasing artefacts.
+Notice that, in spectral domain, there is no frequency peaks, thus limiting aliasing artifacts.
 
 ( All these methods use spatial characteristics to generate sampling.
 The quality of these distributions is mainly characterized by their Fourier spectra. ## Blue-noise, anisotropy, no peaks ## )
 
-All these methods aim at generating distributions with the best blue-noise spectra, but we could need other type of distributions.
+All these methods aim at generating distributions with the best blue-noise spectra, but we may need other type of distributions as well.
 
 
 
 == Previous works: General Noise Methods
 
-Since two years, some methods proposed to generate sampling distributions accordingly to a given Fourier spectrum.
-They allow to generate distributions with the best properties needed for a particular application.
+Since two years, some methods have been proposed to generate sampling distributions with user-specified Fourier spectra.
+They allow to generate distributions with the best properties needed for particular applications.
 
 
 
 == Previous works: Tile-based Methods
 
-Most of these advanced sampling methods have a strong complexity and thus are rarely used in applications due to large computation times.
+Most of these advanced sampling methods are not suitable for practical application due to their complexity and low speed.
 Tile-based methods aim at reducing sampling complexity while producing good sampling distributions.
 The core idea of these methods is to store the sampling distribution through a hierarchical and non-periodic tiling system.
-( Then the sampling is reconstructed by generating the tiling during the runtime. )
 
-These tilings come from previous tile-based methods.
+The tilings shown in this slide come from prior-art tile-based methods.
 The red dots are the barycenters of each tiles.
-The Fourier spectrum of these barycenters contain a lot of peaks that express pattern and regularities in the tiling.
-In the right part of the spectrum, these peaks are circled.
-Even after optimization of these barycenters, the more important spectral peaks will still remain because of the inherent regularities of the tiling.
-( This is the main problem we solved in this work. )
+The Fourier spectrum of these barycenters contain a lot of peaks, highlighted by circle, that express pattern and regularities in the tilings.
+Even after optimization of the samples' positions, spectral peaks still remain because of the inherent regularities of the tiling.
+( This is the main problem we solved in this work. ) ## central point to emphase ##
 
 
 
 == Previous works: Positioning
 
-To sum up, we propose an sampling methods that overcome drawbacks of previous tile-based methods
+In this work, we propose a sampling method that overcomes drawbacks of previous tile-based methods
 and that can generate sampling distribution equivalent to the best state-of-the-art sampling methods in term of quality.
-We can also produce distributions with user-specified fourier spectra as with General Noise methods.
+We can also produce distributions with user-specified Fourier spectra as with General Noise methods.
 
 
 
@@ -105,25 +103,27 @@ We can also produce distributions with user-specified fourier spectra as with Ge
 To achieve our goal, we need a hierarchical tiling system, non-periodic and free of strong regularities.
 This tiling must support a sampling system with spectral control.
 
+Lets see now the details of the proposed system.
+
 
 
 == Base lattice
 
-The basis of our system is a hexagonal lattice that provide better anisotropy and simpler connectivity than rectangular lattice.
-We combine it to a recursive subdivision scheme based on centered hexagonal numbers that allow to densify the lattice.
-From this lattice we can construct a hierarchical non-periodic tiling system...
+The building blocks of our system are hexagons that provide better anisotropy and simpler connectivity than squares.
+We recursively subdivide each hexagon into smaller hexagons, thus densify the underlying lattice.
+This hexagonal lattice is used to build a more complex hierarchical non-periodic tiling system.
 
 
 
 == Polyhexes & Subdivision
 -- Polyhexes catalog
 
-...by enumerating all possible fixed trihexes.
-A trihex is a group of three connected hexagons.
+We group hexagons into connected triplets, which are called trihexes.
+We eumerate all possible geometric configurations, shown here.
 
 -- Subdivision rule
 
-From each such trihex, we create a quasi-trihex using hexagonal subdivision, followed by clustering the constituent hexagons into further trihexes.
+For each trihex, we subdivide constituent hexagons, followed by clustering them into further trihexes.
 Please see the paper for more detail about this step.
 All these rules form a closed and finite subdivision system that can produces a hierarchical and non-periodic tiling.
 
@@ -131,11 +131,11 @@ All these rules form a closed and finite subdivision system that can produces a 
 
 == Comparison with previous works
 
-The Fourier spectrum of this tiling's barycenters has a better anisotropy compare to tiling from previous tile-based methods.
-( This is due to hexagonal lattice and a greater variety of tiles. )
-But we still have some pattern/regularities as shown by the spectral peaks circled in red.
-Because the tiling come from multiple subdivision of tiles, some alignment arise on the borders of the previous levels of tiles.
-And it is enough to generate harmful spectral peaks.
+The Fourier spectrum of this tiling is more isotropic compared to previous tile-based methods.
+This is due to hexagonal lattice and a greater variety of tiles.
+But we still have small spectral peaks pattern/regularities as shown by the spectral peaks circled in red.
+Because our tiling is generated by applying recursive subdivision scheme, some alignments arise on the borders of the previous levels of tiles.
+It is enough to generate small but still harmful spectral peaks.
 
 
 
@@ -170,7 +170,7 @@ Each of these triple-edge modifiers...
 
 == Irregular quasi-hexagonal lattice: one TEM + random words
 
-A stochastic process randomly selects these binary words from a set of admissible triple-edge modifiers, which enforces preservation of the underlying hexatile tiling.
+A stochastic process randomly selects these binary words from a set of admissible triple-edge modifiers, which enforces preservation of the underlying hextile tiling.
 You can find details in the paper.
 
 
@@ -216,46 +216,46 @@ Thus, this tiling system is a good base to build a high quality sampling system.
 
 To construct a sampling distribution we start with an irregular trihex, that we subdivide enough to the desired density.
 From this tiling, we take the barycenters of all tiles.
-( It produce a basic sample distribution with good spectral characteristics. )
 
 
 
 == Sampling optimization: offset vectors
 
 To reach the desired spectral target, we need to optimize the barycenters.
-These local offsets are sufficient to greatly model the spectrum to our desire.
+These local offsets are sufficient to shape the spectrum to desired profile.
 
 
 
 == Sampling optimization: local optimization
 
 From each irregular trihex in our library and their possible neighbors, we generate a collection of patches characterized by unique structural indices.
-Each such patch contains a set of tile centroids to be optimized, after which the offset between the basis position and the optimized one, is stored in a lookup table sorted by structural indices.
+Each such patch contains a set of tile centroids to be optimized.
+The offset between the basis position and the optimized one, is stored in a lookup table sorted by structural indices.
 You can find detail on how this structural index is construct in the paper.
 
 
 
 == Sampling optimization: multiple spectral target
 
-Thus, for a different spectral target, a different lookup table is produced.
+For different spectral targets, different lookup tables are produced.
 
 
 
 == Results Tile-based
 
-Compare to previous tile-based methods, this system produce blue-noise distribution of much better quality without spectral peaks.
+Compare to previous tile-based methods, this system produces blue-noise distributions of much better quality and without spectral peaks.
 
 
 
 == Results Blue noise
 
-In fact, for blue-noise sampling, we produce distribution of equivalent quality than best state of the art blue-noise methods.
+In fact, for blue-noise sampling, we produce distributions of equivalent quality than best state-of-the-art blue-noise methods.
 
 
 
 == Results Step noise
 
-We can also produce more specific distribution as with a general noise method.
+We can also produce more specific distributions as with a general noise method.
 
 
 
@@ -267,20 +267,22 @@ This spectral control allow to mimic existing distribution of a forest for examp
 
 == Results Timing
 
-In term of speed, more than a million points per seconds can be generate as previous tile-based methods.
+In term of speed, more than a million of points per seconds can be generated as with previous tile-based methods.
 
 
 
 == Results Adaptive (video)
 
-From the hierarchical nature of the tiling system, it is possible to generate adaptive sampling accordingly to a density function.
+Thanks to hierarchical nature of the tiling system, it's possible to generate adaptive sampling which is locally proportional to a density function.
 
 
 
 == Overall Pipeline
 
-To resume the whole system.
-A precomputation phase is needed to construct a set of subdivision rules that allow to generate a hierarchical non-periodic tiling.
+In summary,
+A precomputation phase is needed.
+
+ to construct a set of subdivision rules that allows to generate a hierarchical non-periodic tiling.
 These tiling barycenters produce a basic sample distribution that are optimized to fit a user-specified spectral target.
 The offset vectors obtain from this optimization are then stored in a lookup table.
 
@@ -292,6 +294,9 @@ Precomputed offsets vectors are added to the barycenters of each tiles;
 
 == Contributions
 
-In this work, our contribution are:
-A novel tiling system that is hierarchical, non-periodic and free of spectral peaks;
-A novel sampling system that is fast and can generate adaptive distributions with a control over its spectral characteristics.
+Lets summarize our contributions:
+
+First, a novel hierarchical, non-periodic tiling system is proposed.
+The key property of this system is absence of spectral peaks.
+
+Seconds, a novel sampling system is proposed which generate adaptive distributions with control over their spectral characteristics.
